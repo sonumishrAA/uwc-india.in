@@ -1,0 +1,31 @@
+/* .Nav-uwc {
+  background-image: url("https://img.lovepik.com/background/20211021/large/lovepik-the-scene-of-urban-construction-background-image_400149199.jpg");
+  background-size: cover;
+  object-fit: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-position: 0 -420px;
+  /* border: 0.1px solid black; 
+  border-radius: 0px 0px 2px 2px;
+  opacity: 0.9;
+}
+.ul-uwc li {
+  border: 1px solid black;
+  padding: 10px 10px 10px 10px;
+}
+.ul-uwc li a {
+  font-size: 1em;
+  padding: 10px 10px;
+  color: rgb(0, 0, 0);
+}
+.ul-uwc li a:hover {
+  color: black;
+} */
+.Nav-uwc {
+  background-color: #339bc4; /* Neutral background */
+}
+.ul-uwc li a {
+  /* font-size: 1em; */
+  /* padding: 10px 10px; */
+  color: rgb(0, 0, 0);
+}

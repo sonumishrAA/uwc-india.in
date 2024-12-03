@@ -1,0 +1,68 @@
+/* General Styles */
+.cont-head {
+  margin: 0;
+  padding: 20px 0;
+  width: 100%;
+  background-color: #2a81a3; /* Neutral background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.head1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap; /* Allows wrapping for responsiveness */
+}
+
+.head11 {
+  width: 70px;
+  height: 70px;
+  background-image: url("https://i.ibb.co/gvWCc4j/blacklogo.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-right: 15px;
+}
+
+.head12 {
+  text-align: center;
+}
+
+.bebas-neue-regular {
+  font-family: "Bebas Neue", sans-serif;
+  font-weight: 700;
+  font-size: 2.8rem;
+  color: #333333; /* Neutral dark color for text */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.1rem;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+  .head1 {
+    flex-direction: column; /* Stack logo and text */
+  }
+
+  .head11 {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .bebas-neue-regular {
+    font-size: 2rem;
+    letter-spacing: 0.05rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .head11 {
+    width: 50px;
+    height: 50px;
+  }
+
+  .bebas-neue-regular {
+    font-size: 1.6rem;
+  }
+}

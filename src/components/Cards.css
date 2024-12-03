@@ -1,0 +1,41 @@
+@media (min-width: 1025px) {
+  .Cards {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    justify-content: space-evenly;
+  }
+
+  .card {
+    width: 350px;
+  }
+}
+@media (min-width: 481px) and (max-width: 768px) {
+  .Cards {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    padding: 10px;
+    justify-content: space-evenly;
+    align-items: center;
+    /* border: 1px solid red; */
+    flex-basis: 40%;
+  }
+  .card {
+    flex-basis: 40%;
+    margin-top: 20px;
+  }
+}
+@media (max-width: 480px) {
+  .Cards {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+  .card {
+    width: 350px;
+    margin-top: 20px;
+  }
+}
