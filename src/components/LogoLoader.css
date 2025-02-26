@@ -1,0 +1,28 @@
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #2a81a3;
+}
+
+.logo-zoom {
+  animation: zoomInOut .8s infinite;
+}
+
+@keyframes zoomInOut {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+img {
+  width: 120px;
+  height: auto;
+}

@@ -38,10 +38,9 @@ function TermsAndConditions() {
         <section>
           <h2>4. Payment Terms</h2>
           <p>
-            Payments for services are to be made directly to the workers or
-            contractors as agreed. UWC India does not handle financial
-            transactions, but we strive to provide transparent and secure
-            transactions.
+            1.⁠ ⁠We don't have any kind of refund policy all sales are final{" "}
+            <br />
+            2.⁠ ⁠Our pricing range starts from Rs. 2000
           </p>
         </section>
 

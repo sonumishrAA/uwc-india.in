@@ -1,35 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Cards.css";
 
 function Card({
   title,
-  discription,
+  description,
   CTA,
   src,
-  hindiTitle,
-  hindiDescription,
-  hindiCTA,
+  onClick, // onClick function passed as prop
 }) {
-  const [isHindi, setIsHindi] = useState(false); // State to track language
-
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm card relative">
-      <img alt="" src={src} className="h-56 w-full object-cover" />
+    <div
+      className="overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm card relative"
+      onClick={onClick} // Trigger the onClick to open modal
+    >
+      <img alt="" src={src} className="h-56 w-full object-cover rounded-t-lg" />
 
       <div className="p-4 sm:p-6">
-        <h3 className="text-lg font-medium text-gray-900">
-          {isHindi ? hindiTitle : title}
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
 
-        <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
-          {isHindi ? hindiDescription : discription}
-        </p>
+        <p className="mt-2 text-sm text-gray-500">{description}</p>
 
         <a
-          href="/cdf"
+          href="#"
           className="group mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-600"
         >
-          {isHindi ? hindiCTA : CTA}
+          {CTA}
           <span
             aria-hidden="true"
             className="block transition-all group-hover:ms-0.5 rtl:rotate-180"
@@ -37,14 +32,6 @@ function Card({
             &rarr;
           </span>
         </a>
-
-        {/* Smaller button positioned at the top-right */}
-        <button
-          onClick={() => setIsHindi(!isHindi)} // Toggle the language
-          className="absolute top-4 right-4 px-3 py-1 text-sm bg-blue-500 text-white rounded-full hover:bg-blue-600"
-        >
-          {isHindi ? "EN" : "हिंदी"}
-        </button>
       </div>
     </div>
   );

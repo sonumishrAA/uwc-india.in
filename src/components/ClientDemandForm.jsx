@@ -1,218 +1,241 @@
-// import React, { useState } from "react";
-// import { db, collection, addDoc } from "../firebase";
-// import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // For navigation to payment page
+// import { addDataToCollection } from "../firebase"; // Firebase function
 
-// const workerTypes = [
-//   { label: "Plumber (प्लंबर)", value: "Plumber", price: 500 },
-//   { label: "Painter (पेंटर)", value: "Painter", price: 400 },
-//   { label: "Electrician (बिजली मिस्त्री)", value: "Electrician", price: 600 },
-//   { label: "Helper (Helper)", value: "Helper", price: 300 },
-//   { label: "Mason (मिस्त्री)", value: "Mason", price: 700 },
-// ];
+const CDFForm = () => {
+  const navigate = useNavigate();
 
-// const ClientDemandForm = () => {
-//   const [formData, setFormData] = useState({
-//     name: "",
-//     phone: "",
-//     address: "",
-//     landmark: "",
-//     pincode: "",
-//     workerType: [],
-//     workerCount: {},
-//   });
+  const [fullName, setFullName] = useState("");
+  const [contactNo, setContactNo] = useState("");
+  const [address, setAddress] = useState("");
+  const [landmark, setLandmark] = useState("");
+  const [pincode, setPincode] = useState("");
 
-//   const [totalPrice, setTotalPrice] = useState(0);
+  const [workers, setWorkers] = useState([{ type: "", count: 1 }]); // Array to hold multiple worker types and their counts
+  const [totalPrice, setTotalPrice] = useState(0);
 
-//   const handleChange = (e) => {
-//     const { name, value, type, checked } = e.target;
+  const workerPrices = {
+    worker1: 500,
+    worker2: 700,
+    worker3: 1000,
+  };
 
-//     if (type === "checkbox") {
-//       setFormData((prevData) => ({
-//         ...prevData,
-//         workerType: checked
-//           ? [...prevData.workerType, value]
-//           : prevData.workerType.filter((worker) => worker !== value),
-//       }));
-//     } else if (name === "workerCount") {
-//       setFormData((prevData) => {
-//         const updatedWorkerCount = {
-//           ...prevData.workerCount,
-//           [value]: parseInt(e.target.value),
-//         };
+  // Handle changes in the worker type or count
+  const handleWorkerChange = (index, field, value) => {
+    const updatedWorkers = [...workers];
+    updatedWorkers[index][field] = value;
 
-//         // Recalculate total price
-//         let newTotal = 0;
-//         for (const worker in updatedWorkerCount) {
-//           const workerPrice =
-//             workerTypes.find((w) => w.value === worker)?.price || 0;
-//           newTotal += (updatedWorkerCount[worker] || 0) * workerPrice;
-//         }
+    if (field === "count") {
+      updatedWorkers[index].totalPrice =
+        workerPrices[updatedWorkers[index].type] * value;
+    }
 
-//         setTotalPrice(newTotal);
+    setWorkers(updatedWorkers);
+    calculateTotalPrice(updatedWorkers);
+  };
 
-//         return {
-//           ...prevData,
-//           workerCount: updatedWorkerCount,
-//         };
-//       });
-//     } else {
-//       setFormData((prevData) => ({
-//         ...prevData,
-//         [name]: value,
-//       }));
-//     }
-//   };
+  // Calculate total price for all workers
+  const calculateTotalPrice = (workers) => {
+    const total = workers.reduce(
+      (sum, worker) => sum + (worker.totalPrice || 0),
+      0
+    );
+    setTotalPrice(total);
+  };
 
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
+  // Add another worker input field
+  const addWorker = () => {
+    setWorkers([...workers, { type: "", count: 1 }]);
+  };
 
-//     try {
-//       await addDoc(collection(db, "clientDemands"), {
-//         ...formData,
-//         totalPrice,
-//       });
-//       console.log("Data successfully added!");
-//       alert("Proceeding to payment...");
-//       window.location.href = "/payment"; // Redirect to payment page
-//     } catch (e) {
-//       console.error("Error adding document: ", e);
-//     }
-//   };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-//   return (
-//     <motion.div
-//       initial={{ opacity: 0, y: 20 }}
-//       animate={{ opacity: 1, y: 0 }}
-//       transition={{ duration: 0.5 }}
-//       className="p-6 max-w-3xl mx-auto mt-10 bg-white shadow-lg rounded-lg"
-//     >
-//       <h2 className="text-3xl font-bold text-center mb-6 text-blue-600">
-//         Client Demand Form
-//       </h2>
+    const formData = {
+      fullName,
+      contactNo,
+      address,
+      landmark,
+      pincode,
+      workers,
+      totalPrice,
+    };
 
-//       <form onSubmit={handleSubmit} className="space-y-8">
-//         {/* Existing input fields */}
-//         {/* ... */}
+    // Add data to Firestore
+    await addDataToCollection("client_demand", formData);
 
-//         {/* Worker Type Selection */}
-//         <motion.div whileHover={{ scale: 1.05 }}>
-//           <label className="block text-gray-700 font-medium mb-2">
-//             Select Worker Type(s)
-//           </label>
-//           <div className="grid grid-cols-2 gap-4 mt-4">
-//             {workerTypes.map((worker) => (
-//               <motion.div
-//                 key={worker.value}
-//                 whileHover={{ scale: 1.05 }}
-//                 className="flex items-center space-x-3 bg-gray-100 p-3 rounded-lg shadow"
-//               >
-//                 <input
-//                   type="checkbox"
-//                   id={worker.value}
-//                   name="workerType"
-//                   value={worker.value}
-//                   onChange={handleChange}
-//                   className="h-5 w-5"
-//                 />
-//                 <label htmlFor={worker.value} className="text-gray-700">
-//                   {worker.label} (₹{worker.price}/worker)
-//                 </label>
-//               </motion.div>
-//             ))}
-//           </div>
-//         </motion.div>
+    // Navigate to the Payment Page with the selected data
+    navigate("/payment", { state: { totalPrice, workers, formData } });
+  };
 
-//         {/* Worker Count and Total Price */}
-//         {formData.workerType.length > 0 && (
-//           <motion.div
-//             initial={{ opacity: 0 }}
-//             animate={{ opacity: 1 }}
-//             transition={{ duration: 0.5 }}
-//             className="bg-blue-50 p-4 rounded-lg shadow"
-//           >
-//             <label className="block text-gray-700 font-medium mb-2">
-//               Specify Number of Workers
-//             </label>
-//             {formData.workerType.map((worker) => (
-//               <motion.div
-//                 key={worker}
-//                 whileHover={{ scale: 1.05 }}
-//                 className="flex items-center justify-between mt-4"
-//               >
-//                 <span className="text-gray-700">{worker}</span>
-//                 <input
-//                   type="number"
-//                   name="workerCount"
-//                   min="1"
-//                   value={formData.workerCount[worker] || ""}
-//                   onChange={handleChange}
-//                   placeholder="Enter count"
-//                   className="px-3 py-2 border rounded-lg shadow focus:ring-2 focus:ring-blue-500"
-//                 />
-//               </motion.div>
-//             ))}
-
-//             <div className="mt-6 text-xl font-bold text-gray-800">
-//               Total Price: ₹{totalPrice}
-//             </div>
-//           </motion.div>
-//         )}
-
-//         {/* Submit Button */}
-//         <motion.button
-//           type="submit"
-//           whileHover={{ scale: 1.1 }}
-//           whileTap={{ scale: 0.95 }}
-//           className="w-full bg-blue-600 text-white py-3 rounded-lg shadow-lg hover:bg-blue-700"
-//         >
-//           Submit and Proceed to Payment
-//         </motion.button>
-//       </form>
-//     </motion.div>
-//   );
-// };
-
-// export default ClientDemandForm;
-import React from "react";
-
-const ClientDemandForm = () => {
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center">
-      {/* Header Section */}
-      <header className="bg-white-600 text-black w-full py-4 shadow-md">
-        <h1 className="text-center text-2xl font-bold">Client Demand Form</h1>
-        <p className="text-center text-sm mt-1">
-          Let us know your requirements to serve you better!
-        </p>
-      </header>
+    <div className="max-w-4xl mx-auto p-4">
+      <h2 className="text-3xl font-semibold text-center mb-6">
+        Client Demand Form
+      </h2>
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 bg-white p-6 rounded-xl shadow-lg"
+      >
+        {/* Full Name */}
+        <div>
+          <label htmlFor="fullName" className="block text-lg font-medium">
+            Full Name
+          </label>
+          <input
+            id="fullName"
+            type="text"
+            placeholder="Enter your full name"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            className="w-full p-3 border-2 border-gray-300 rounded-lg mt-1"
+            required
+          />
+        </div>
 
-      {/* Form Section */}
-      <div className="bg-white rounded-lg shadow-lg mt-8 p-6 w-full max-w-3xl">
-        <iframe
-          src="https://docs.google.com/forms/d/e/1FAIpQLSckyRqJ5Mybii1cQ5LPn9COYXyAt0V11-PDuoCSYKzMJymOpw/viewform?embedded=true"
-          width="100%"
-          height="1740"
-          frameBorder="0"
-          marginHeight="0"
-          marginWidth="0"
-          className="rounded-md border border-gray-300"
-          title="Client Demand Form"
+        {/* Contact Number */}
+        <div>
+          <label htmlFor="contactNo" className="block text-lg font-medium">
+            Contact Number
+          </label>
+          <input
+            id="contactNo"
+            type="text"
+            placeholder="Enter your contact number"
+            value={contactNo}
+            onChange={(e) => setContactNo(e.target.value)}
+            className="w-full p-3 border-2 border-gray-300 rounded-lg mt-1"
+            required
+          />
+        </div>
+
+        {/* Address */}
+        <div>
+          <label htmlFor="address" className="block text-lg font-medium">
+            Address
+          </label>
+          <input
+            id="address"
+            type="text"
+            placeholder="Enter your full address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            className="w-full p-3 border-2 border-gray-300 rounded-lg mt-1"
+            required
+          />
+        </div>
+
+        {/* Landmark */}
+        <div>
+          <label htmlFor="landmark" className="block text-lg font-medium">
+            Landmark
+          </label>
+          <input
+            id="landmark"
+            type="text"
+            placeholder="Enter a nearby landmark"
+            value={landmark}
+            onChange={(e) => setLandmark(e.target.value)}
+            className="w-full p-3 border-2 border-gray-300 rounded-lg mt-1"
+          />
+        </div>
+
+        {/* Pincode */}
+        <div>
+          <label htmlFor="pincode" className="block text-lg font-medium">
+            Pincode
+          </label>
+          <input
+            id="pincode"
+            type="text"
+            placeholder="Enter your pincode"
+            value={pincode}
+            onChange={(e) => setPincode(e.target.value)}
+            className="w-full p-3 border-2 border-gray-300 rounded-lg mt-1"
+            required
+          />
+        </div>
+
+        {/* Worker Type & Quantity */}
+        {workers.map((worker, index) => (
+          <div key={index} className="space-y-3">
+            <div>
+              <label
+                htmlFor={`workerType-${index}`}
+                className="block text-lg font-medium"
+              >
+                Worker Type
+              </label>
+              <select
+                id={`workerType-${index}`}
+                value={worker.type}
+                onChange={(e) =>
+                  handleWorkerChange(index, "type", e.target.value)
+                }
+                className="w-full p-3 border-2 border-gray-300 rounded-lg mt-1"
+                required
+              >
+                <option value="">Select Worker Type</option>
+                <option value="worker1">Worker Type 1</option>
+                <option value="worker2">Worker Type 2</option>
+                <option value="worker3">Worker Type 3</option>
+              </select>
+            </div>
+
+            <div>
+              <label
+                htmlFor={`workerCount-${index}`}
+                className="block text-lg font-medium"
+              >
+                Number of Workers
+              </label>
+              <input
+                id={`workerCount-${index}`}
+                type="number"
+                min="1"
+                value={worker.count}
+                onChange={(e) =>
+                  handleWorkerChange(index, "count", e.target.value)
+                }
+                className="w-full p-3 border-2 border-gray-300 rounded-lg mt-1"
+                required
+              />
+            </div>
+
+            <div>
+              <p>
+                Total for this worker: ₹
+                {workerPrices[worker.type] * worker.count}
+              </p>
+            </div>
+          </div>
+        ))}
+
+        {/* Button to add another worker */}
+        <div className="text-center">
+          <button
+            type="button"
+            onClick={addWorker}
+            className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600"
+          >
+            Add Another Worker
+          </button>
+        </div>
+
+        {/* Display total price */}
+        <div className="text-xl font-semibold">
+          <p>Total Price: ₹{totalPrice}</p>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition duration-200"
         >
-          Loading…
-        </iframe>
-      </div>
-
-      {/* Footer Section */}
-      <footer className="bg-gray-800 text-gray-300 w-full py-3 mt-8 text-center">
-        <p>© 2024 uwcindia. All Rights Reserved.</p>
-        <p className="text-sm">
-          Need help?{" "}
-          <a href="mailto:support@uwcindia.in" className="text-blue-400">
-            Contact us
-          </a>
-        </p>
-      </footer>
+          Submit
+        </button>
+      </form>
     </div>
   );
 };
-export default ClientDemandForm;
+
+export default CDFForm;

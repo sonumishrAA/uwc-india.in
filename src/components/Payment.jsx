@@ -1,32 +1,60 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
+import { useState } from 'react'
+import { supabase } from '../supabaseClient'
 
-const PaymentPage = () => {
-  const location = useLocation();
-  const { totalPrice } = location.state || { totalPrice: 0 };
+export default function Payment() {
+    const [amount, setAmount] = useState(0)
+    const [loading, setLoading] = useState(false)
 
-  return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h2 className="text-2xl font-semibold mb-4">Payment Page</h2>
-      <p className="text-lg mb-4">
-        The total amount you need to pay is: <strong>₹{totalPrice}</strong>
-      </p>
-      <div className="flex flex-col items-center">
-        <img
-          src="https://via.placeholder.com/150" // Replace with your QR Code URL
-          alt="QR Code"
-          className="w-32 h-32 mb-4"
-        />
-        <p>Scan the QR code to pay</p>
-        <a
-          href="/"
-          className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-        >
-          Back to Home
-        </a>
-      </div>
-    </div>
-  );
-};
+    const initiatePayment = async () => {
+        setLoading(true)
+        const user = supabase.auth.getUser()
+        const orderId = `ORDER_${Date.now()}_${user.id}`
 
-export default PaymentPage;
+        try {
+            // Create order in Supabase
+            const { data: order, error } = await supabase
+                .from('orders')
+                .insert([{
+                    user_id: user.id,
+                    amount,
+                    status: 'pending',
+                    order_id: orderId
+                }])
+                .select()
+                .single()
+
+            // Initiate PhonePe payment
+            const response = await fetch('/payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    orderId,
+                    amount,
+                    userId: user.id
+                })
+            })
+
+            const paymentData = await response.json()
+            window.location.href = paymentData.data.instrumentResponse.redirectInfo.url
+        } catch (error) {
+            console.error('Payment error:', error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    return (
+        <div className="payment-container">
+            <h2>Make Payment</h2>
+            <input
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="Enter amount"
+            />
+            <button onClick={initiatePayment} disabled={loading}>
+                {loading ? 'Processing...' : 'Pay with PhonePe'}
+            </button>
+        </div>
+    )
+}

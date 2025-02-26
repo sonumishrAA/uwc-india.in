@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Section.css";
 
+
 function Section() {
   const [language, setLanguage] = useState("en"); // Default language: English
 
@@ -9,33 +10,39 @@ function Section() {
     en: {
       title: "UNITY WORKERS & CONSTRUCTIONS",
       description:
-        "Unity Workers and Construction (UWC India) connects skilled workers like plumbers, electricians, masons, and laborers with clients, offering door-to-door services. Based in Pratapgarh, Uttar Pradesh, UWC ensures job opportunities, simplifies hiring, and promotes transparency in India’s construction labor market.",
+        "Unity Workers and Construction (UWC India) connects skilled workers like plumbers, electricians, masons, and laborers with clients, offering door-to-door services. Based in Pratapgarh, Uttar Pradesh, UWC ensures job opportunities, simplifies hiring, and promotes transparency in India’s construction labor market. Our pricing range starts from just 1000 rupees, making professional services both affordable and accessible.",
       buttonText: "Visit Our All Services",
       services: [
         {
-          title: "Plumbing Services",
+          title: "Hire Plumber",
           description: "Skilled plumbers for residential and commercial needs",
+          link: "/HireWorkerPL",
         },
         {
-          title: "Electrical Work",
+          title: "Hire Electrician",
           description:
             "Electricians for installations, repairs, and maintenance.",
+          link: "/HireWorkerEL",
         },
         {
-          title: "Masonry Services",
+          title: "Hire Masonry",
           description: "Professional masons for construction projects.",
+          link: "/HireWorkerMA",
         },
         {
-          title: "Painting Services",
+          title: "Hire Painter",
           description: "High-quality interior and exterior painting.",
+          link: "/HireWorkerPA",
         },
         {
-          title: "Labor Supply",
+          title: "Hire Labor",
           description: "Reliable helpers and laborers for various tasks.",
+          link: "HireWorkerLA",
         },
         {
           title: "Contracting Services",
           description: "Comprehensive construction and renovation contracts.",
+          link: "/ContractServices",
         },
       ],
     },
@@ -46,28 +53,34 @@ function Section() {
       buttonText: "हमारी सभी सेवाओं को देखें",
       services: [
         {
-          title: "प्लंबिंग सेवाएं",
+          title: "प्लंबर सेवाएँ",
           description: "घरेलू और व्यावसायिक आवश्यकताओं के लिए कुशल प्लंबर।",
+          link: "/HireWorkerPL",
         },
         {
-          title: "इलेक्ट्रिकल कार्य",
+          title: "इलेक्ट्रिकल सेवाएँ",
           description: "स्थापना, मरम्मत और रखरखाव के लिए इलेक्ट्रीशियन।",
+          link: "/HireWorkerEL",
         },
         {
-          title: "राजगीरी सेवाएं",
+          title: "राजगीरी सेवाएँ",
           description: "निर्माण परियोजनाओं के लिए पेशेवर राजगीर।",
+          link: "/HireWorkerMA",
         },
         {
-          title: "पेंटिंग सेवाएं",
+          title: "पेंटिंग सेवाएँ",
           description: "उच्च गुणवत्ता वाली आंतरिक और बाहरी पेंटिंग।",
+          link: "/HireWorkerPA",
         },
         {
-          title: "मजदूर आपूर्ति",
+          title: "मजदूर सेवाएँ",
           description: "विभिन्न कार्यों के लिए विश्वसनीय सहायक और मजदूर।",
+          link: "/HireWorkerLA",
         },
         {
-          title: "ठेकेदार सेवाएं",
+          title: "ठेकेदार सेवाएँ",
           description: "निर्माण और नवीनीकरण के लिए संपूर्ण ठेके।",
+          link: "/ContractServices",
         },
       ],
     },
@@ -83,11 +96,11 @@ function Section() {
   return (
     <>
       <section>
-        <div className="max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
+        <div className="max-w-screen-xl mx-auto sm:px-6 sm:py-12 lg:px-8 lg:py-16">
           {/* Language Toggle Button */}
           <button
             onClick={toggleLanguage}
-            className="mb-4 px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+            className="mb-4 px-4 py-2 w-56 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
           >
             {language === "en" ? "हिंदी में देखें" : "View in English"}
           </button>
@@ -111,11 +124,11 @@ function Section() {
                 <a
                   key={index}
                   className="block rounded-xl border border-gray-100 p-4 shadow-sm hover:border-gray-200 hover:ring-1 hover:ring-gray-200 focus:outline-none focus:ring"
-                  href="/contnvisit"
+                  href={service.link}
                 >
                   <span className="inline-block rounded-lg bg-gray-50 p-3">
                     <img
-                      src={`https://i.ibb.co/gvWCc4j/blacklogo.png`}
+                      src="https://i.ibb.co/gvWCc4j/blacklogo.png"
                       alt=""
                       className="object-cover w-full rounded-md"
                     />
